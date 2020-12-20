@@ -4,6 +4,7 @@ import colors from 'colors';
 
 import productsRoutes from './routes/products.js';
 import connectDB from './config/db.js';
+import { error, notFound } from './middleware/error.js';
 
 dotenv.config();
 
@@ -12,6 +13,11 @@ const app = express();
 connectDB();
 
 app.use('/api/products', productsRoutes);
+
+app.use(notFound);
+
+// Custom handling errors middleware
+app.use(error);
 
 const PORT = process.env.PORT || 5000;
 
