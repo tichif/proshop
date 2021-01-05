@@ -13,8 +13,10 @@ const app = express();
 
 connectDB();
 
+app.use(express.json());
+
 app.use('/api/products', productsRoutes);
-app.use('/api/user', productsRoutes);
+app.use('/api/users', usersRoutes);
 
 app.use(notFound);
 
