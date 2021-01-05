@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import colors from 'colors';
 
 import productsRoutes from './routes/products.js';
+import usersRoutes from './routes/users.js';
 import connectDB from './config/db.js';
 import { error, notFound } from './middleware/error.js';
 
@@ -13,6 +14,7 @@ const app = express();
 connectDB();
 
 app.use('/api/products', productsRoutes);
+app.use('/api/user', productsRoutes);
 
 app.use(notFound);
 
