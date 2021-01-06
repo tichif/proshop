@@ -21,3 +21,7 @@ export const authUser = asyncHandler(async (req, res) => {
     throw new Error('Invalid credentials!!!');
   }
 });
+
+export const getUserProfile = asyncHandler(async (req, res) => {
+  res.send(req.user);
+});
