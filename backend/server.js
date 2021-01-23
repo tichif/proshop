@@ -4,6 +4,7 @@ import colors from 'colors';
 
 import productsRoutes from './routes/products.js';
 import usersRoutes from './routes/users.js';
+import ordersRoutes from './routes/orders.js';
 import connectDB from './config/db.js';
 import { error, notFound } from './middleware/error.js';
 
@@ -17,6 +18,7 @@ app.use(express.json());
 
 app.use('/api/products', productsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/orders', ordersRoutes);
 
 app.use(notFound);
 
