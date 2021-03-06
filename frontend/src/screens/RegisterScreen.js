@@ -20,11 +20,13 @@ const RegisterScreen = ({ location, history }) => {
   const userRegister = useSelector((state) => state.userRegister);
   const { loading, error, userInfos } = userRegister;
 
+  const redirect = location.search ? location.search.split('=')[1] : '/';
+
   useEffect(() => {
     if (userInfos) {
       history.push(redirect);
     }
-  }, [userInfos, history]);
+  }, [userInfos, history, redirect]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -34,8 +36,6 @@ const RegisterScreen = ({ location, history }) => {
       dispatch(register(name, email, password));
     }
   };
-
-  const redirect = location.search ? location.search.split('=')[1] : '/';
 
   return (
     <FormContainer>

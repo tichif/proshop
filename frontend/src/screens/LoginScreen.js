@@ -17,18 +17,18 @@ const LoginScreen = ({ location, history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { loading, error, userInfos } = userLogin;
 
+  const redirect = location.search ? location.search.split('=')[1] : '/';
+
   useEffect(() => {
     if (userInfos) {
       history.push(redirect);
     }
-  }, [userInfos, history]);
+  }, [userInfos, history, redirect]);
 
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(login(email, password));
   };
-
-  const redirect = location.search ? location.search.split('=')[1] : '/';
 
   return (
     <FormContainer>
