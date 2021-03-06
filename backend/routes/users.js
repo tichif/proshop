@@ -2,11 +2,12 @@ import { Router } from 'express';
 
 import {
   authUser,
+  getAllUsers,
   getUserProfile,
   signup,
   updateUserProfile,
 } from '../controllers/users.js';
-import protect from '../middleware/authMiddleware.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
@@ -26,6 +27,9 @@ router
 // @desc    Sign up a user
 // @route   POST /api/users/
 // @access  Public
-router.route('/').post(signup);
+// @desc    Get all users
+// @route   GET /api/users/
+// @access  Private/Admin
+router.route('/').post(signup).get(protect, admin, getAllUsers);
 
 export default router;
