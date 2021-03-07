@@ -4,8 +4,10 @@ import {
   authUser,
   deleteUser,
   getAllUsers,
+  getUserById,
   getUserProfile,
   signup,
+  updateUser,
   updateUserProfile,
 } from '../controllers/users.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
@@ -25,17 +27,18 @@ router
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
 
-// @desc    Sign up an user
-// @route   POST /api/users/
-// @access  Public
-// @desc    Get all users
-// @route   GET /api/users/
-// @access  Private/Admin
+// @desc    Sign up an user  / Get all users
+// @route   POST /api/users/  / GET /api/users/
+// @access  Public  / Private/Admin
 router.route('/').post(signup).get(protect, admin, getAllUsers);
 
-// @desc    delete an user
-// @route   DELETE /api/users/:id
+// @desc    Delete an user / Get an user  / Update an user
+// @route   DELETE /api/users/:id / GET /api/users/:id  / PUT /api/users/;id
 // @access  Private / Admin
-router.route('/:id').delete(protect, admin, deleteUser);
+router
+  .route('/:id')
+  .delete(protect, admin, deleteUser)
+  .get(protect, admin, getUserById)
+  .put(protect, admin, updateUser);
 
 export default router;
