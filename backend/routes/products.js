@@ -1,6 +1,11 @@
 import express from 'express';
 
-import { getProducts, getProduct } from '../controllers/products.js';
+import {
+  getProducts,
+  getProduct,
+  deleteProduct,
+} from '../controllers/products.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -9,9 +14,9 @@ const router = express.Router();
 // @access  Public
 router.get('/', getProducts);
 
-// @desc    Fetch single products
-// @route   GET /api/products/:id
-// @access  Public
-router.get('/:id', getProduct);
+// @desc    Fetch single products  / Delete a product
+// @route   GET /api/products/:id  / DELETE /api/products/:id
+// @access  Public  / Private - Admin
+router.route('/:id').get(getProduct).delete(protect, admin, deleteProduct);
 
 export default router;
