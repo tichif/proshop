@@ -15,6 +15,7 @@ import PaymentScreen from './screens/PaymentScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
 import UserListScreen from './screens/UserListScreen';
+import ProductListScreen from './screens/ProductListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 
 const App = () => {
@@ -33,6 +34,11 @@ const App = () => {
           <Route exact path='/product/:id' component={ProductScreen} />
           <Route exact path='/cart/:id?' component={CartScreen} />{' '}
           <Route exact path='/admin/userlist' component={UserListScreen} />
+          <Route
+            exact
+            path='/admin/productlist'
+            component={ProductListScreen}
+          />
           <Route exact path='/admin/user/:id/edit' component={UserEditScreen} />
           {/*  when you put ? behind a :variable, the variable is optional */}
           <Route exact path='/' component={HomeScreen} />
