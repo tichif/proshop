@@ -10,6 +10,9 @@ import {
   PRODUCT_DELETE_REQUEST,
   PRODUCT_DELETE_SUCCESS,
   PRODUCT_DELETE_FAILED,
+  PRODUCT_CREATE_REQUEST,
+  PRODUCT_CREATE_FAILED,
+  PRODUCT_CREATE_SUCCESS,
 } from '../constants/products';
 
 export const listProducts = () => async (dispatch) => {
@@ -52,7 +55,7 @@ export const listProductDetails = (id) => async (dispatch) => {
   }
 };
 
-export const deleteOrder = (id) => async (dispatch, getState) => {
+export const deleteProduct = (id) => async (dispatch, getState) => {
   try {
     dispatch({ type: PRODUCT_DELETE_REQUEST });
 
@@ -72,6 +75,35 @@ export const deleteOrder = (id) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: PRODUCT_DELETE_FAILED,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const createProduct = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: PRODUCT_CREATE_REQUEST });
+
+    const { userInfos } = getState().userLogin;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfos.token}`,
+      },
+    };
+
+    const { data } = await axios.post(`/api/products`, {}, config);
+
+    dispatch({
+      type: PRODUCT_CREATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_CREATE_FAILED,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
