@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { listProductDetails } from '../actions/productActions';
+import { listProductDetails, updateProduct } from '../actions/productActions';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
+import { PRODUCT_UPDATE_RESET } from '../constants/products';
 
-const ProductEditScreen = ({ match }) => {
+const ProductEditScreen = ({ match, history }) => {
   const productId = match.params.id;
 
   const [price, setPrice] = useState(0);
@@ -24,22 +25,48 @@ const ProductEditScreen = ({ match }) => {
   const productDetail = useSelector((state) => state.productDetail);
   const { loading, error, product } = productDetail;
 
+  const productUpdate = useSelector((state) => state.productUpdate);
+  const {
+    loading: loadingUpdate,
+    error: errorUpdate,
+    success: successUpdate,
+  } = productUpdate;
+
   useEffect(() => {
-    if (!product.name || product._id !== productId) {
-      dispatch(listProductDetails(productId));
+    if (successUpdate) {
+      dispatch({ type: PRODUCT_UPDATE_RESET });
+      history.push('/admin/productlist');
     } else {
-      setName(product.name);
-      setPrice(product.price);
-      setImage(product.image);
-      setCategory(product.category);
-      setBrand(product.brand);
-      setCountInStock(product.countInStock);
-      setDescription(product.description);
+      if (!product.name || product._id !== productId) {
+        dispatch(listProductDetails(productId));
+      } else {
+        setName(product.name);
+        setPrice(product.price);
+        setImage(product.image);
+        setCategory(product.category);
+        setBrand(product.brand);
+        setCountInStock(product.countInStock);
+        setDescription(product.description);
+      }
     }
-  }, [dispatch, productId, product.name]);
+
+    // eslint-disable-next-line
+  }, [dispatch, productId, product.name, history, successUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
+    dispatch(
+      updateProduct({
+        _id: productId,
+        name,
+        price,
+        image,
+        category,
+        brand,
+        countInStock,
+        description,
+      })
+    );
   };
 
   return (
@@ -49,6 +76,8 @@ const ProductEditScreen = ({ match }) => {
       </Link>
       <FormContainer>
         <h1>Edit Product</h1>
+        {loadingUpdate && <Loader />}
+        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
         {loading ? (
           <Loader />
         ) : error ? (
