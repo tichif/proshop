@@ -30,7 +30,7 @@ app.use('/api/config/paypal', (req, res) => {
 
 // Make static folder
 const __dirname = path.resolve(); // only for module syntax in ES6
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(notFound);
 
