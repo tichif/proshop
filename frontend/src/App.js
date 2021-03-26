@@ -15,6 +15,7 @@ import PaymentScreen from './screens/PaymentScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
 import UserListScreen from './screens/UserListScreen';
+import OrderListScreen from './screens/OrderListScreen';
 import ProductListScreen from './screens/ProductListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import ProductEditScreen from './screens/ProductEditScreen';
@@ -35,6 +36,7 @@ const App = () => {
           <Route exact path='/product/:id' component={ProductScreen} />
           <Route exact path='/cart/:id?' component={CartScreen} />{' '}
           <Route exact path='/admin/userlist' component={UserListScreen} />
+          <Route exact path='/admin/orderlist' component={OrderListScreen} />
           <Route
             exact
             path='/admin/productlist'

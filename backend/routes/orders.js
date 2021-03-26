@@ -1,10 +1,11 @@
 import { Router } from 'express';
 
-import { protect } from '../middleware/authMiddleware.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
 import {
   addOrderItems,
   getLoggedInUserOrders,
   getOrderById,
+  getOrders,
   updateOrderToPaid,
 } from '../controllers/orders.js';
 
@@ -14,6 +15,11 @@ const router = Router();
 // @route   POST /api/orders
 // @access  Private
 router.post('/', protect, addOrderItems);
+
+// @desc    GET all orders
+// @route   GET /api/orders
+// @access  Private - Admin
+router.get('/', protect, admin, getOrders);
 
 // @desc    Get Logged in user orders
 // @route   GET /api/orders/myorders

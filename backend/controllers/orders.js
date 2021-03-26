@@ -73,3 +73,8 @@ export const getLoggedInUserOrders = asyncHandler(async (req, res) => {
   const orders = await Order.find({ user: req.user._id });
   res.status(200).json(orders);
 });
+
+export const getOrders = asyncHandler(async (req, res) => {
+  const orders = await Order.find({}).populate('user', 'id name');
+  res.status(200).json(orders);
+});
