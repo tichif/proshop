@@ -14,7 +14,7 @@ import {
 } from '../actions/orderActions';
 import { ORDER_PAY_RESET, ORDER_DELIVERED_RESET } from '../constants/order';
 
-const OrderScreen = ({ match }) => {
+const OrderScreen = ({ match, history }) => {
   const id = match.params.id;
 
   const [sdkReady, setSdkReady] = useState(false);
@@ -37,6 +37,9 @@ const OrderScreen = ({ match }) => {
   } = orderDelivered;
 
   useEffect(() => {
+    if (!userInfos) {
+      history.push(`/login?redirect=/order/${order._id}`);
+    }
     const addPaypalScript = async () => {
       const { data: clientId } = await axios.get('/api/config/paypal');
       const script = document.createElement('script');
@@ -61,7 +64,16 @@ const OrderScreen = ({ match }) => {
         setSdkReady(true);
       }
     }
-  }, [dispatch, id, successPay, order, setSdkReady, successDelivered]);
+  }, [
+    dispatch,
+    id,
+    successPay,
+    order,
+    setSdkReady,
+    successDelivered,
+    userInfos,
+    history,
+  ]);
 
   if (!loading) {
     const addDecimals = (num) => {
@@ -210,17 +222,20 @@ const OrderScreen = ({ match }) => {
                   )}
                 </ListGroup.Item>
               )}
-              {userInfos.isAdmin && order.isPaid && !order.isDelivered && (
-                <ListGroup.Item>
-                  <Button
-                    type='button'
-                    className='btn btn-block'
-                    onClick={deliveredHandler}
-                  >
-                    Mark as delivered
-                  </Button>
-                </ListGroup.Item>
-              )}
+              {userInfos &&
+                userInfos.isAdmin &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type='button'
+                      className='btn btn-block'
+                      onClick={deliveredHandler}
+                    >
+                      Mark as delivered
+                    </Button>
+                  </ListGroup.Item>
+                )}
             </ListGroup>
           </Card>
         </Col>
