@@ -6,6 +6,7 @@ import {
   getLoggedInUserOrders,
   getOrderById,
   getOrders,
+  updateOrderToDelivered,
   updateOrderToPaid,
 } from '../controllers/orders.js';
 
@@ -31,9 +32,14 @@ router.get('/myorders', protect, getLoggedInUserOrders);
 // @access  Private
 router.route('/:id').get(protect, getOrderById);
 
-// @desc    Update orders details
+// @desc    Update orders details to paid
 // @route   PUT /api/orders/:id/pay
 // @access  Private
 router.put('/:id/pay', protect, updateOrderToPaid);
+
+// @desc    Update orders details to delivered
+// @route   PUT /api/orders/:id/deliver
+// @access  Private - Admin
+router.put('/:id/deliver', protect, admin, updateOrderToDelivered);
 
 export default router;

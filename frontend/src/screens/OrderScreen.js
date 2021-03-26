@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Image, ListGroup, Card } from 'react-bootstrap';
+import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -7,8 +7,12 @@ import { PayPalButton } from 'react-paypal-button-v2';
 
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { getOrderDetails, payOrder } from '../actions/orderActions';
-import { ORDER_PAY_RESET } from '../constants/order';
+import {
+  getOrderDetails,
+  payOrder,
+  deliverOrder,
+} from '../actions/orderActions';
+import { ORDER_PAY_RESET, ORDER_DELIVERED_RESET } from '../constants/order';
 
 const OrderScreen = ({ match }) => {
   const id = match.params.id;
@@ -22,6 +26,15 @@ const OrderScreen = ({ match }) => {
 
   const orderPay = useSelector((state) => state.orderPay);
   const { loading: loadingPay, success: successPay } = orderPay;
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfos } = userLogin;
+
+  const orderDelivered = useSelector((state) => state.orderDelivered);
+  const {
+    loading: loadingDelivered,
+    success: successDelivered,
+  } = orderDelivered;
 
   useEffect(() => {
     const addPaypalScript = async () => {
@@ -37,8 +50,9 @@ const OrderScreen = ({ match }) => {
       document.body.appendChild(script);
     };
 
-    if (!order || successPay) {
+    if (!order || successPay || successDelivered) {
       dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_DELIVERED_RESET });
       dispatch(getOrderDetails(id));
     } else if (!order.isPaid) {
       if (!window.paypal) {
@@ -47,7 +61,7 @@ const OrderScreen = ({ match }) => {
         setSdkReady(true);
       }
     }
-  }, [dispatch, id, successPay, order, setSdkReady]);
+  }, [dispatch, id, successPay, order, setSdkReady, successDelivered]);
 
   if (!loading) {
     const addDecimals = (num) => {
@@ -61,8 +75,11 @@ const OrderScreen = ({ match }) => {
   }
 
   const successPaymentHandler = (paymentResult) => {
-    console.log(paymentResult);
     dispatch(payOrder(id, paymentResult));
+  };
+
+  const deliveredHandler = () => {
+    dispatch(deliverOrder(order));
   };
 
   return loading ? (
@@ -91,9 +108,11 @@ const OrderScreen = ({ match }) => {
                 {order.shippingAddress.postalCode},{' '}
                 {order.shippingAddress.country}
               </p>
-
-              {order.idDelivered ? (
-                <Message variant='success'>Paid on {order.deliveredAt}</Message>
+              {loadingDelivered && <Loader />}
+              {order.isDelivered ? (
+                <Message variant='success'>
+                  Delivered on {order.deliveredAt}
+                </Message>
               ) : (
                 <Message variant='danger'>Not delivered</Message>
               )}
@@ -189,6 +208,17 @@ const OrderScreen = ({ match }) => {
                       onSuccess={successPaymentHandler}
                     />
                   )}
+                </ListGroup.Item>
+              )}
+              {userInfos.isAdmin && order.isPaid && !order.isDelivered && (
+                <ListGroup.Item>
+                  <Button
+                    type='button'
+                    className='btn btn-block'
+                    onClick={deliveredHandler}
+                  >
+                    Mark as delivered
+                  </Button>
                 </ListGroup.Item>
               )}
             </ListGroup>
