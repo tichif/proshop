@@ -1,4 +1,4 @@
-# proshop
+# Proshop
 An ecommerce application built with the MERN technology
 
 - React for the frontend
